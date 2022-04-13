@@ -10,7 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OpenChatApp">
         <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SetProfile"
+            android:exported="false" />
+        <activity
+            android:name=".OTPAuthentication"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
