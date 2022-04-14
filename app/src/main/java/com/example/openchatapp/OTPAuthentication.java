@@ -75,6 +75,7 @@ public class OTPAuthentication extends AppCompatActivity {
                     mProgressBarOfOTPAuth.setVisibility(View.INVISIBLE);
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(OTPAuthentication.this, SetProfile.class);
+                    startActivity(intent);
                     finish();
                 }
                 else {
@@ -84,5 +85,10 @@ public class OTPAuthentication extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+        Toast.makeText(getApplicationContext(),"Verifying code Automatically",Toast.LENGTH_SHORT).show();
+        firebaseAuth.signInWithCredential(phoneAuthCredential);
     }
 }
