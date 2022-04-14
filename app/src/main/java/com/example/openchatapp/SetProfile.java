@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SetProfile extends AppCompatActivity {
     private CardView mGetUserImage;
@@ -94,9 +95,9 @@ public class SetProfile extends AppCompatActivity {
             public void onClick(View view) {
                 name = mGetUserName.getText().toString();
                 if (name.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Name Is Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Name Is Empty", Toast.LENGTH_LONG).show();
                 } else if (imagePath == null) {
-                    Toast.makeText(getApplicationContext(), "Image Is Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Image Is Empty", Toast.LENGTH_LONG).show();
                 } else { // Set the data on our database
                     mProgressBarOfSetProfile.setVisibility(View.VISIBLE);
                     sendDataForNewUser();
@@ -122,7 +123,6 @@ public class SetProfile extends AppCompatActivity {
 
         UserProfile mUserProfile = new UserProfile(name, firebaseAuth.getUid());
         databaseReference.setValue(mUserProfile); //Save the profile on the database
-        Toast.makeText(getApplicationContext(), "User Profile Added Successfully", Toast.LENGTH_SHORT).show();
         sendImageToStorage();
     }
 
@@ -134,6 +134,7 @@ public class SetProfile extends AppCompatActivity {
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
         } catch (IOException e) {
+            Toast.makeText(getApplicationContext(), "ERROR GETTING IMAGE FOR COMPRESSION", Toast.LENGTH_LONG).show();
             e.printStackTrace(); // Print error
         }
 
@@ -151,22 +152,22 @@ public class SetProfile extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         ImageUriAccessToken = uri.toString();
-                        Toast.makeText(getApplicationContext(), "URI Get Success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "URI Get Success", Toast.LENGTH_LONG).show();
                         sendDataToCloudFirestore();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "URI Get Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "URI Get Failed", Toast.LENGTH_LONG).show();
                     }
                 });
 
-                Toast.makeText(getApplicationContext(), "Image Is Uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Image Is Uploaded", Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Image Not Uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Image Not Uploaded (Compression Failed)", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -182,19 +183,9 @@ public class SetProfile extends AppCompatActivity {
         documentReference.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(getApplicationContext(), "Data Sent Succesfully To Firestore", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Data Sent Successfully To Firestore", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    // Is this causing issues?
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            imagePath = data.getData();
-            mGetUserImageInImageView.setImageURI(imagePath);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 
