@@ -63,14 +63,14 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
+        android:id="@+id/logoofviewprofile"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/logoofviewprofile"
-        android:src="@drawable/ic_baseline_person_24"
         android:layout_alignLeft="@id/viewuserimage"
-        android:layout_marginLeft="-80dp"
-        app:tint="#716E6E"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="-100dp"
+        android:src="@drawable/ic_baseline_person_24"
+        app:tint="#716E6E" />
 
     <EditText
         android:id="@+id/viewusername"
