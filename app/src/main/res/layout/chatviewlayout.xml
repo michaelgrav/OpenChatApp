@@ -17,14 +17,14 @@
             android:id="@+id/nameofuser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Name Displays Here"
-            android:layout_toRightOf="@id/cardviewofuser"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@id/cardviewofuser"
+            android:text="Name Displays Here"
+            android:fontFamily="@font/opensans"
             android:textColor="#0B0B0B"
             android:textSize="20dp"
-            android:textStyle="bold">
-        </TextView>
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/statusofuser"
@@ -34,6 +34,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="3dp"
             android:text="Status Displays Here"
+            android:fontFamily="@font/opensans"
             android:layout_toRightOf="@+id/cardviewofuser"
             android:textColor="#6A6A6A"
             android:textSize="12sp">
