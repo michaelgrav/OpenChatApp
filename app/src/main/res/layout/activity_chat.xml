@@ -22,12 +22,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="OpenChatApp"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:id="@+id/myapptext"
                 android:textColor="@color/white">
-
-
             </TextView>
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>

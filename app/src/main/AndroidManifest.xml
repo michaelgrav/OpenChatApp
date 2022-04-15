@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OpenChatApp">
         <activity
+            android:name=".UpdateProfile"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
             android:exported="false" />
         <activity
