@@ -60,8 +60,8 @@
             android:layout_height="match_parent"
             android:src="@drawable/defaultprofilepicture"
             android:id="@+id/viewuserimageinimageview"
-            android:scaleType="centerCrop">
-        </ImageView>
+            android:scaleType="centerCrop"/>
+
     </androidx.cardview.widget.CardView>
 
     <ImageView
@@ -84,7 +84,7 @@
         android:clickable="false"
         android:enabled="false"
         android:hint="Enter Your Name Here"
-        android:inputType="textCapWords"/>
+        android:inputType="textCapWords" />
 
     <TextView
         android:id="@+id/movetoupdateprofile"
