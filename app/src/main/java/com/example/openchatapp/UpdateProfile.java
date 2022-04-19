@@ -141,16 +141,6 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
 
-        /*
-        mGetNewImageInImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE);
-            }
-        });
-         */
-
         storageReference = firebaseStorage.getReference();
         storageReference.child("Images").child(firebaseAuth.getUid()).child("Profile Pic").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -224,6 +214,33 @@ public class UpdateProfile extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Image Not Updated (Compression Failed)", Toast.LENGTH_LONG).show();
             }
         });
+
+
     }
 
+    // Application closed
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DocumentReference documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getUid());
+        documentReference.update("status", "Offline").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getApplicationContext(), "User is offline", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Application opened
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DocumentReference documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getUid());
+        documentReference.update("status", "Online").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getApplicationContext(), "User is online", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

@@ -46,7 +46,8 @@ public class ChatFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recyclerview);
 
 
-        Query query = firebaseFirestore.collection("Users");
+        // Get all users except the current one
+        Query query = firebaseFirestore.collection("Users").whereNotEqualTo("uid", firebaseAuth.getUid());
         FirestoreRecyclerOptions<FirebaseModel> allUserName = new FirestoreRecyclerOptions
                 .Builder<FirebaseModel>()
                 .setQuery(query, FirebaseModel.class)
@@ -68,10 +69,15 @@ public class ChatFragment extends Fragment {
                     noteViewHolder.statusOfUser.setText(firebaseModel.getStatus());
                 }
 
+                // User clicks on chat
                 noteViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(getActivity(), "Item is clicked", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), SpecificChat.class);
+                        intent.putExtra("name", firebaseModel.getName());
+                        intent.putExtra("recieveruid", firebaseModel.getUid());
+                        intent.putExtra("imageuri", firebaseModel.getImage());
+                        startActivity(intent);
                     }
                 });
             }
