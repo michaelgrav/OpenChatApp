@@ -13,9 +13,7 @@
         android:src="@drawable/appicon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:id="@+id/logo">
-
-    </ImageView>
+        android:id="@+id/logo"/>
 
     <TextView
         android:id="@+id/textheading"
@@ -28,9 +26,7 @@
         android:textAlignment="center"
         android:textColor="#6E6E6E"
         android:textSize="20sp"
-        android:textStyle="bold">
-
-    </TextView>
+        android:textStyle="bold"/>
 
 
     <EditText
@@ -45,9 +41,7 @@
         android:fontFamily="@font/opensans"
         android:inputType="number"
         android:textAlignment="center"
-        android:textColor="@color/black">
-
-    </EditText>
+        android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/changenumber"
@@ -59,9 +53,7 @@
         android:text="Change your number"
         android:textColor="@color/black"
         android:fontFamily="@font/opensans"
-        android:textSize="18sp">
-
-    </TextView>
+        android:textSize="18sp"/>
 
     <android.widget.Button
         android:id="@+id/verifyOTP"
@@ -75,9 +67,7 @@
         android:paddingRight="40dp"
         android:text="Verify OTP"
         android:fontFamily="@font/opensans"
-        android:textColor="@color/white">
-
-    </android.widget.Button>
+        android:textColor="@color/white"/>
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -86,8 +76,6 @@
         android:layout_below="@+id/verifyOTP"
         android:id="@+id/progressbarofOTPauth"
         android:visibility="invisible"
-        android:layout_marginTop="30dp">
-
-    </ProgressBar>
+        android:layout_marginTop="30dp"/>
 
 </RelativeLayout>
