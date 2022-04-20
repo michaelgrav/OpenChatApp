@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,14 +20,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ChatFragment extends Fragment {
-    private FirebaseFirestore firebaseFirestore;
     LinearLayoutManager linearLayoutManager;
-    private FirebaseAuth firebaseAuth;
 
     ImageView mImageViewOfUser;
     FirestoreRecyclerAdapter<FirebaseModel, NoteViewHolder> chatAdapter;
@@ -40,8 +35,8 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatfragment, container, false);
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
 
         mRecyclerView = view.findViewById(R.id.recyclerview);
 
@@ -70,15 +65,12 @@ public class ChatFragment extends Fragment {
                 }
 
                 // User clicks on chat
-                noteViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), SpecificChat.class);
-                        intent.putExtra("name", firebaseModel.getName());
-                        intent.putExtra("recieveruid", firebaseModel.getUid());
-                        intent.putExtra("imageuri", firebaseModel.getImage());
-                        startActivity(intent);
-                    }
+                noteViewHolder.itemView.setOnClickListener(view1 -> {
+                    Intent intent = new Intent(getActivity(), SpecificChat.class);
+                    intent.putExtra("name", firebaseModel.getName());
+                    intent.putExtra("recieveruid", firebaseModel.getUid());
+                    intent.putExtra("imageuri", firebaseModel.getImage());
+                    startActivity(intent);
                 });
             }
 

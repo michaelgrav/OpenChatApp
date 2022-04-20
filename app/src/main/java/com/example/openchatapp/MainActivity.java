@@ -49,43 +49,35 @@ public class MainActivity extends AppCompatActivity {
         countryCode = mCountryCodePicker.getSelectedCountryCodeWithPlus();
 
         // If the user wants to change their country code
-        mCountryCodePicker.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
-            @Override
-            public void onCountrySelected() {
-                countryCode = mCountryCodePicker.getSelectedCountryCodeWithPlus();
+        mCountryCodePicker.setOnCountryChangeListener(() -> countryCode = mCountryCodePicker.getSelectedCountryCodeWithPlus());
+
+        mSendOTP.setOnClickListener(view -> {
+            String number; // Number for the OTP
+
+            number = mGetPhoneNumber.getText().toString();
+
+            // If the user does not input their number into the field
+            if (number.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Please Enter Your Number", Toast.LENGTH_SHORT).show();
             }
-        });
+            // The user did not enter enough digits
+            else if (number.length() < 10) {
+                Toast.makeText(getApplicationContext(), "Please Enter The Correct Number", Toast.LENGTH_SHORT).show();
+            }
+            // If everything is fine, send the OTP
+            else {
+                mProgressBarOfMain.setVisibility(View.VISIBLE);
+                phoneNumber = countryCode + number;
 
-        mSendOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String number; // Number for the OTP
+                // Pass phone number?
+                PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
+                        .setPhoneNumber(phoneNumber)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(MainActivity.this)
+                        .setCallbacks(mCallBacks)
+                        .build();
 
-                number = mGetPhoneNumber.getText().toString();
-
-                // If the user does not input their number into the field
-                if (number.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Please Enter Your Number", Toast.LENGTH_SHORT).show();
-                }
-                // The user did not enter enough digits
-                else if (number.length() < 10) {
-                    Toast.makeText(getApplicationContext(), "Please Enter The Correct Number", Toast.LENGTH_SHORT).show();
-                }
-                // If everything is fine, send the OTP
-                else {
-                    mProgressBarOfMain.setVisibility(View.VISIBLE);
-                    phoneNumber = countryCode + number;
-
-                    // Pass phone number?
-                    PhoneAuthOptions options = PhoneAuthOptions.newBuilder(firebaseAuth)
-                            .setPhoneNumber(phoneNumber)
-                            .setTimeout(60L, TimeUnit.SECONDS)
-                            .setActivity(MainActivity.this)
-                            .setCallbacks(mCallBacks)
-                            .build();
-
-                    PhoneAuthProvider.verifyPhoneNumber(options);
-                }
+                PhoneAuthProvider.verifyPhoneNumber(options);
             }
         });
 

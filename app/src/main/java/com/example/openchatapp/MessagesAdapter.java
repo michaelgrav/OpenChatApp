@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MessagesAdapter extends RecyclerView.Adapter {
 
@@ -57,7 +58,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
         Messages messages = messagesArrayList.get(position);
 
         // If its the sender
-        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(messages.getSenderID())) {
+        if (Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid().equals(messages.getSenderID())) {
             return ITEM_SEND;
         } else {
             return ITEM_RECEIVE; // If its the receiver
