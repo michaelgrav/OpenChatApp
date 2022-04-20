@@ -11,9 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -40,48 +37,39 @@ public class OTPAuthentication extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        mChangeNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(OTPAuthentication.this, MainActivity.class);
-                startActivity(intent);
-            }
+        mChangeNumber.setOnClickListener(view -> {
+            Intent intent = new Intent(OTPAuthentication.this, MainActivity.class);
+            startActivity(intent);
         });
 
-        mVerifyOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                enteredOTP = mGetOTP.getText().toString();
+        mVerifyOTP.setOnClickListener(view -> {
+            enteredOTP = mGetOTP.getText().toString();
 
-                if (enteredOTP.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Enter Your OTP First", Toast.LENGTH_SHORT).show();
+            if (enteredOTP.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Enter Your OTP First", Toast.LENGTH_SHORT).show();
 
-                } else {
-                    mProgressBarOfOTPAuth.setVisibility(View.VISIBLE);
-                    String codeReceived = getIntent().getStringExtra("OTP"); // Code received by Firebase
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeReceived, enteredOTP);
-                    signInWithPhoneAuthCredential(credential);
-                }
+            } else {
+                mProgressBarOfOTPAuth.setVisibility(View.VISIBLE);
+                String codeReceived = getIntent().getStringExtra("OTP"); // Code received by Firebase
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeReceived, enteredOTP);
+                signInWithPhoneAuthCredential(credential);
             }
         });
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Send the user to SetProfile
-                    mProgressBarOfOTPAuth.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(OTPAuthentication.this, SetProfile.class);
-                    startActivity(intent);
-                    finish();
-                }
-                else {
-                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
-                    }
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Send the user to SetProfile
+                mProgressBarOfOTPAuth.setVisibility(View.INVISIBLE);
+                Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(OTPAuthentication.this, SetProfile.class);
+                startActivity(intent);
+                finish();
+            }
+            else {
+                if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

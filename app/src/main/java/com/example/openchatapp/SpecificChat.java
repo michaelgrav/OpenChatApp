@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -41,11 +40,11 @@ public class SpecificChat extends AppCompatActivity {
 
     private String enteredMessage;
     Intent intent;
-    String mRecieverName, senderName, mRecieverUID, mSenderUID;
+    String mReceiverName, mReceiverUID, mSenderUID;
     private FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
 
-    String senderRoom, recieverRoom;
+    String senderRoom, receiverRoom;
     ImageButton mBackButtonOfSpecificChat;
 
     RecyclerView mMessageRecyclerView;
@@ -84,20 +83,15 @@ public class SpecificChat extends AppCompatActivity {
         mMessageRecyclerView.setAdapter(messagesAdapter);
 
         mSenderUID = firebaseAuth.getUid();
-        mRecieverUID = getIntent().getStringExtra("recieveruid");
-        mRecieverName = getIntent().getStringExtra("name");
+        mReceiverUID = getIntent().getStringExtra("recieveruid");
+        mReceiverName = getIntent().getStringExtra("name");
 
-        senderRoom = mSenderUID + mRecieverUID;
-        recieverRoom = mRecieverUID + mSenderUID;
+        senderRoom = mSenderUID + mReceiverUID;
+        receiverRoom = mReceiverUID + mSenderUID;
 
         intent = getIntent();
         setSupportActionBar(mToolBarOfSpecificChat);
-        mToolBarOfSpecificChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Toolbar Is Clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+        mToolBarOfSpecificChat.setOnClickListener(view -> Toast.makeText(getApplicationContext(), "Toolbar Is Clicked", Toast.LENGTH_SHORT).show());
 
         DatabaseReference databaseReference = firebaseDatabase.getReference().child("chats").child(senderRoom).child("messages");
         messagesAdapter = new MessagesAdapter(SpecificChat.this, messagesArrayList);
@@ -119,14 +113,9 @@ public class SpecificChat extends AppCompatActivity {
         });
 
         // If back button is pressed, leave the chat
-        mBackButtonOfSpecificChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mBackButtonOfSpecificChat.setOnClickListener(view -> finish());
 
-        mNameOfSpecificUser.setText(mRecieverName);
+        mNameOfSpecificUser.setText(mReceiverName);
         String uri = getIntent().getStringExtra("imageuri");
         if (uri.isEmpty()) {
             Toast.makeText(getApplicationContext(), "NULL IS RECEIVED", Toast.LENGTH_SHORT).show();
@@ -134,38 +123,27 @@ public class SpecificChat extends AppCompatActivity {
             Picasso.get().load(uri).into(mImageViewOfSpecificUser);
         }
 
-        mSendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                enteredMessage = mGetMessage.getText().toString();
-                if (enteredMessage.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Enter Message First", Toast.LENGTH_SHORT).show();
-                } else {
-                    Date date = new Date();
-                    currentTime = simpleDateFormat.format(calendar.getTime()); // Date for timestamp
-                    Messages messages = new Messages(enteredMessage, firebaseAuth.getUid(), date.getTime(), currentTime);
-                    firebaseDatabase = FirebaseDatabase.getInstance();
-                    firebaseDatabase.getReference().child("chats")
-                                .child(senderRoom)
-                                .child("messages")
-                                .push().setValue(messages).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            firebaseDatabase.getReference()
+        mSendMessageButton.setOnClickListener(view -> {
+            enteredMessage = mGetMessage.getText().toString();
+            if (enteredMessage.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Enter Message First", Toast.LENGTH_SHORT).show();
+            } else {
+                Date date = new Date();
+                currentTime = simpleDateFormat.format(calendar.getTime()); // Date for timestamp
+                Messages messages = new Messages(enteredMessage, firebaseAuth.getUid(), date.getTime(), currentTime);
+                firebaseDatabase = FirebaseDatabase.getInstance();
+                firebaseDatabase.getReference().child("chats")
+                            .child(senderRoom)
+                            .child("messages")
+                            .push().setValue(messages).addOnCompleteListener(task -> firebaseDatabase.getReference()
                                     .child("chats")
-                                    .child(recieverRoom)
+                                    .child(receiverRoom)
                                     .child("messages")
                                     .push()
-                                    .setValue(messages).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                    .setValue(messages).addOnCompleteListener(task1 -> {
 
-                                }
-                            });
-                        }
-                    });
-                    mGetMessage.setText(null);
-                }
+                                    }));
+                mGetMessage.setText(null);
             }
         });
     }

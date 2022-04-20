@@ -12,9 +12,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/appicon">
-
-    </ImageView>
+        android:src="@drawable/appicon"
+        android:contentDescription="App Icon" />
 
     <!-- Text for the text "from" -->
     <TextView
@@ -25,8 +24,7 @@
         android:layout_marginBottom="5dp"
         android:text="Made With ❤️ By"
         android:fontFamily="@font/opensansmedium"
-        android:textColor="#1E1D1D">
-    </TextView>
+        android:textColor="#1E1D1D"/>
 
     <!-- Text for my name -->
     <TextView
@@ -40,8 +38,6 @@
         android:text="Michael Graves"
         android:textColor="#434C5E"
         android:textSize="18sp"
-        android:textStyle="bold">
-
-    </TextView>
+        android:textStyle="bold"/>
 
 </RelativeLayout>
