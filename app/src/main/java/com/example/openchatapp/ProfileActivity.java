@@ -4,30 +4,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
     EditText mViewUserName;
@@ -66,20 +61,12 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(mToolbarOfViewProfile);
 
         // If the user presses back, send them to the previous menu
-        mBackButtonOfViewProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mBackButtonOfViewProfile.setOnClickListener(view -> finish());
 
         storageReference = firebaseStorage.getReference();
-        storageReference.child("Images").child(firebaseAuth.getUid()).child("Profile Pic").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                imageURIAccessToken = uri.toString();
-                Picasso.get().load(uri).into(mViewUserImageInImageView);
-            }
+        storageReference.child("Images").child(Objects.requireNonNull(firebaseAuth.getUid())).child("Profile Pic").getDownloadUrl().addOnSuccessListener(uri -> {
+            imageURIAccessToken = uri.toString();
+            Picasso.get().load(uri).into(mViewUserImageInImageView);
         });
 
         DatabaseReference databaseReference = firebaseDatabase.getReference(firebaseAuth.getUid());
@@ -96,13 +83,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        mMoveToUpdateProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProfileActivity.this, UpdateProfile.class);
-                intent.putExtra("nameOfUser", mViewUserName.getText().toString());
-                startActivity(intent);
-            }
+        mMoveToUpdateProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(ProfileActivity.this, UpdateProfile.class);
+            intent.putExtra("nameOfUser", mViewUserName.getText().toString());
+            startActivity(intent);
         });
     }
 }

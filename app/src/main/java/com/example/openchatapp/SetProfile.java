@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -37,18 +36,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SetProfile extends AppCompatActivity {
-    private CardView mGetUserImage;
     private ImageView mGetUserImageInImageView;
-    private static int PICK_IMAGE = 123;
     private Uri imagePath;
 
     private EditText mGetUserName;
-    private android.widget.Button mSaveProfile;
 
     private FirebaseAuth firebaseAuth;
     private String name;
 
-    private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
 
     private String ImageUriAccessToken;
@@ -64,49 +59,40 @@ public class SetProfile extends AppCompatActivity {
         setContentView(R.layout.activity_set_profile);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseStorage = FirebaseStorage.getInstance();
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         mGetUserName = findViewById(R.id.getusername);
-        mGetUserImage = findViewById(R.id.getuserimage);
+        CardView mGetUserImage = findViewById(R.id.getuserimage);
         mGetUserImageInImageView = findViewById(R.id.getuserimageinimageview);
-        mSaveProfile = findViewById(R.id.saveProfile);
+        android.widget.Button mSaveProfile = findViewById(R.id.saveProfile);
         mProgressBarOfSetProfile = findViewById(R.id.progressbarofsetprofile);
 
         
-        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
-            @Override
-            public void onActivityResult(Uri result) {
-                mGetUserImageInImageView.setImageURI(result);
-                imagePath = result;
-            }
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
+            mGetUserImageInImageView.setImageURI(result);
+            imagePath = result;
         });
 
-        mGetUserImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Open a picker to choose the profile picture
-                mGetContent.launch("image/*");
-            }
+        mGetUserImage.setOnClickListener(view -> {
+            // Open a picker to choose the profile picture
+            mGetContent.launch("image/*");
         });
 
-        mSaveProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                name = mGetUserName.getText().toString();
-                if (name.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Name Is Empty", Toast.LENGTH_LONG).show();
-                } else if (imagePath == null) {
-                    Toast.makeText(getApplicationContext(), "Image Is Empty", Toast.LENGTH_LONG).show();
-                } else { // Set the data on our database
-                    mProgressBarOfSetProfile.setVisibility(View.VISIBLE);
-                    sendDataForNewUser();
-                    mProgressBarOfSetProfile.setVisibility(View.INVISIBLE);
-                    Intent intent = new Intent(SetProfile.this, ChatActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+        mSaveProfile.setOnClickListener(view -> {
+            name = mGetUserName.getText().toString();
+            if (name.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Name Is Empty", Toast.LENGTH_LONG).show();
+            } else if (imagePath == null) {
+                Toast.makeText(getApplicationContext(), "Image Is Empty", Toast.LENGTH_LONG).show();
+            } else { // Set the data on our database
+                mProgressBarOfSetProfile.setVisibility(View.VISIBLE);
+                sendDataForNewUser();
+                mProgressBarOfSetProfile.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(SetProfile.this, ChatActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -120,7 +106,7 @@ public class SetProfile extends AppCompatActivity {
         name = mGetUserName.getText().toString().trim();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(firebaseAuth.getUid());
+        DatabaseReference databaseReference = firebaseDatabase.getReference(Objects.requireNonNull(firebaseAuth.getUid()));
 
         UserProfile mUserProfile = new UserProfile(name, firebaseAuth.getUid());
         databaseReference.setValue(mUserProfile); //Save the profile on the database
@@ -128,7 +114,7 @@ public class SetProfile extends AppCompatActivity {
     }
 
     private void sendImageToStorage() {
-        StorageReference imageRef = storageReference.child("Images").child(firebaseAuth.getUid()).child("Profile Pic");
+        StorageReference imageRef = storageReference.child("Images").child(Objects.requireNonNull(firebaseAuth.getUid())).child("Profile Pic");
 
         //Image Compression
         Bitmap bitmap = null;
@@ -146,47 +132,26 @@ public class SetProfile extends AppCompatActivity {
 
         // Put the image on storage
         UploadTask uploadTask = imageRef.putBytes(data);
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        ImageUriAccessToken = uri.toString();
-                        Toast.makeText(getApplicationContext(), "URI Get Success", Toast.LENGTH_LONG).show();
-                        sendDataToCloudFirestore();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "URI Get Failed", Toast.LENGTH_LONG).show();
-                    }
-                });
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                ImageUriAccessToken = uri.toString();
+                Toast.makeText(getApplicationContext(), "URI Get Success", Toast.LENGTH_LONG).show();
+                sendDataToCloudFirestore();
+            }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "URI Get Failed", Toast.LENGTH_LONG).show());
 
-                Toast.makeText(getApplicationContext(), "Image Is Uploaded", Toast.LENGTH_LONG).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Image Not Uploaded (Compression Failed)", Toast.LENGTH_LONG).show();
-            }
-        });
+            Toast.makeText(getApplicationContext(), "Image Is Uploaded", Toast.LENGTH_LONG).show();
+        }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Image Not Uploaded (Compression Failed)", Toast.LENGTH_LONG).show());
     }
 
     private void sendDataToCloudFirestore() {
-        DocumentReference documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getUid());
+        DocumentReference documentReference = firebaseFirestore.collection("Users").document(Objects.requireNonNull(firebaseAuth.getUid()));
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", name);
         userData.put("image", ImageUriAccessToken);
         userData.put("uid", firebaseAuth.getUid());
         userData.put("status", "Online");
 
-        documentReference.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(getApplicationContext(), "Data Sent Successfully To Firestore", Toast.LENGTH_LONG).show();
-            }
-        });
+        documentReference.set(userData).addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), "Data Sent Successfully To Firestore", Toast.LENGTH_LONG).show());
     }
 }
 
