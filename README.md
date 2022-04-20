@@ -19,3 +19,6 @@ Here's some screenshots of the app so far!
 
 ## Splash Screen
 <img src="https://user-images.githubusercontent.com/29133471/163513149-0f1d7bf4-cdb2-4be7-aa62-72e78fb851be.png" alt="Image of main chat screen" width="250"/>
+
+## Chat Screen
+<img src="https://user-images.githubusercontent.com/29133471/164125582-fdaad6af-b7ce-4445-a23f-85bded5f804a.png" alt="Image of main chat screen" width="250"/>
