@@ -17,28 +17,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical">
+
             <ImageButton
+                android:id="@+id/backButtonOfViewProfile"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/backButtonOfViewProfile"
-                app:tint="@color/white"
+                android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_baseline_arrow_back_24"
-                android:layout_centerVertical="true">
+                app:tint="@color/white">
+
             </ImageButton>
 
             <TextView
+                android:id="@+id/myapptext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Profile"
-                android:textSize="20sp"
-                android:layout_toRightOf="@id/backButtonOfViewProfile"
-                android:layout_marginLeft="10dp"
                 android:layout_centerVertical="true"
-                android:textStyle="bold"
-                android:id="@+id/myapptext"
-                android:textColor="@color/white">
-            </TextView>
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/backButtonOfViewProfile"
+                android:text="Your Profile"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:fontFamily="@font/opensans"
+                android:textStyle="bold"/>
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -56,21 +58,21 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/defaultprofilepicture"
             android:id="@+id/viewuserimageinimageview"
-            android:scaleType="centerCrop">
-        </ImageView>
+            android:scaleType="centerCrop"/>
+
     </androidx.cardview.widget.CardView>
 
     <ImageView
+        android:id="@+id/logoofviewprofile"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/logoofviewprofile"
-        android:src="@drawable/ic_baseline_person_24"
         android:layout_alignLeft="@id/viewuserimage"
-        android:layout_marginLeft="-80dp"
-        app:tint="#716E6E"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="-100dp"
+        android:src="@drawable/ic_baseline_person_24"
+        app:tint="#716E6E" />
 
     <EditText
         android:id="@+id/viewusername"
@@ -82,21 +84,21 @@
         android:clickable="false"
         android:enabled="false"
         android:hint="Enter Your Name Here"
-        android:inputType="textCapWords"></EditText>
+        android:inputType="textCapWords" />
 
     <TextView
+        android:id="@+id/movetoupdateprofile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update Profile?"
-        android:layout_centerInParent="true"
         android:layout_below="@id/viewusername"
+        android:layout_centerInParent="true"
         android:layout_marginTop="50dp"
         android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:paddingTop="10dp"
+        android:paddingRight="20dp"
         android:paddingBottom="10dp"
-        android:id="@+id/movetoupdateprofile"
+        android:text="Update Profile?"
+        android:fontFamily="@font/opensans"
         android:textColor="#303030"/>
-
 
 </RelativeLayout>

@@ -11,10 +11,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ChatActivity extends AppCompatActivity {
     TabLayout tabLayout;
@@ -22,6 +28,9 @@ public class ChatActivity extends AppCompatActivity {
     ViewPager viewPager;
     PagerAdapter pagerAdapter;
     androidx.appcompat.widget.Toolbar mToolBar;
+
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,9 @@ public class ChatActivity extends AppCompatActivity {
 
         mToolBar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_baseline_more_vert_24);
         mToolBar.setOverflowIcon(drawable);
@@ -90,5 +102,32 @@ public class ChatActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.menu, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    // Application closed
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DocumentReference documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getUid());
+        documentReference.update("status", "Offline").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getApplicationContext(), "User is offline", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Application opened
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DocumentReference documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getUid());
+        documentReference.update("status", "Online").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(getApplicationContext(), "User is online", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

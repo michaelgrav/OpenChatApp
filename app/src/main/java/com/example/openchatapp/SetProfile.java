@@ -82,6 +82,7 @@ public class SetProfile extends AppCompatActivity {
                 imagePath = result;
             }
         });
+
         mGetUserImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

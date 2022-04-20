@@ -12,7 +12,7 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_launcher_background">
+        android:src="@drawable/appicon">
 
     </ImageView>
 
@@ -20,26 +20,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Made With ❤️ By"
-        android:textColor="#1E1D1D"
-        android:layout_centerHorizontal="true"
         android:layout_above="@+id/maintext"
-        android:layout_marginBottom="5dp">
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:text="Made With ❤️ By"
+        android:fontFamily="@font/opensansmedium"
+        android:textColor="#1E1D1D">
     </TextView>
 
     <!-- Text for my name -->
     <TextView
+        android:id="@+id/maintext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Michael Graves"
         android:layout_alignParentBottom="true"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:id="@+id/maintext"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
-        android:textColor="#434C5E">
+        android:fontFamily="@font/opensansbold"
+        android:text="Michael Graves"
+        android:textColor="#434C5E"
+        android:textSize="18sp"
+        android:textStyle="bold">
 
     </TextView>
 
