@@ -98,7 +98,7 @@
         android:layout_alignParentBottom="true"
         app:cardCornerRadius="45dp">
 
-        <ImageView
+        <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_baseline_arrow_forward_24"
