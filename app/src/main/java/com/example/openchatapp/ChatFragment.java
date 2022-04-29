@@ -3,6 +3,7 @@ package com.example.openchatapp;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,7 @@ import com.squareup.picasso.Picasso;
 
 public class ChatFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
-
-    ImageView mImageViewOfUser;
-    FirestoreRecyclerAdapter<FirebaseModel, NoteViewHolder> chatAdapter;
-
+    public static final String TAG = "ChatFragment.class";
     RecyclerView mRecyclerView;
 
 
@@ -35,33 +33,40 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.chatfragment, container, false);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FirestoreRecyclerAdapter<FirebaseModel, NoteViewHolder> chatAdapter;
+
+        Log.i(TAG, "onViewCreated: Created");
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-
-        mRecyclerView = view.findViewById(R.id.recyclerview);
-
 
         // Get all users except the current one
         Query query = firebaseFirestore.collection("Users").whereNotEqualTo("uid", firebaseAuth.getUid());
         FirestoreRecyclerOptions<FirebaseModel> allUserName = new FirestoreRecyclerOptions
                 .Builder<FirebaseModel>()
                 .setQuery(query, FirebaseModel.class)
+                .setLifecycleOwner(this)
                 .build();
 
         chatAdapter = new FirestoreRecyclerAdapter<FirebaseModel, NoteViewHolder>(allUserName) {
             @Override
             protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int i, @NonNull FirebaseModel firebaseModel) {
-                noteViewHolder.particularUserName.setText(firebaseModel.getName());
-                String uri = firebaseModel.getImage();
-
-                Picasso.get().load(uri).into(mImageViewOfUser);
+                Log.i(TAG, "onBindViewHolder: " + firebaseModel.getName());
+                Log.i(TAG, "onBindViewHolder index: " + i);
+                noteViewHolder.setUserName(firebaseModel.getName());
+                noteViewHolder.renderImage(firebaseModel.getImage());
 
                 // User is online
                 if (firebaseModel.getStatus().equalsIgnoreCase("Online")) {
-                    noteViewHolder.statusOfUser.setText(firebaseModel.getStatus());
-                    noteViewHolder.statusOfUser.setTextColor(Color.GREEN);
+                    noteViewHolder.setStatus(firebaseModel.getStatus(), Color.GREEN);
                 } else { // User is offline
-                    noteViewHolder.statusOfUser.setText(firebaseModel.getStatus());
+                    noteViewHolder.setStatus(firebaseModel.getStatus(), Color.RED);
                 }
 
                 // User clicks on chat
@@ -87,13 +92,14 @@ public class ChatFragment extends Fragment {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(chatAdapter);
-
-        return view;
     }
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder {
-        private TextView particularUserName;
-        private TextView statusOfUser;
+
+
+    public static class NoteViewHolder extends RecyclerView.ViewHolder {
+        private final TextView particularUserName;
+        private final TextView statusOfUser;
+        private final ImageView mImageViewOfUser;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,19 +108,18 @@ public class ChatFragment extends Fragment {
             statusOfUser = itemView.findViewById(R.id.statusofuser);
             mImageViewOfUser = itemView.findViewById(R.id.imageviewofuser);
         }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        chatAdapter.startListening();
-    }
+        public void renderImage(String uri) {
+            Picasso.get().load(uri).into(mImageViewOfUser);
+        }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (chatAdapter != null) {
-            chatAdapter.stopListening();
+        public void setUserName(String name) {
+            this.particularUserName.setText(name);
+        }
+
+        public void setStatus(String status, int color) {
+            this.statusOfUser.setText(status);
+            this.statusOfUser.setTextColor(color);
         }
     }
 }
